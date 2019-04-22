@@ -1,0 +1,9 @@
+server:
+  port: 8765
+
+spring:
+  application:
+    name: de.youth-club-stage.backend:central-authorisation-service
+  redis:
+    host: localhost
+    port: 6379
