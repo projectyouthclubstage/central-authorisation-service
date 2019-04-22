@@ -1,4 +1,4 @@
-# <Name>
+# <>
 
 ## Anforderung
 
@@ -12,10 +12,12 @@ Als <> möchte ich <>, um <>.
 
 ## Akzeptanzkriterien
 
-###### S1 : Name des Szenarios
-**Gegeben**:
-**Wenn**:
+* [ ]   S1 : Name des Szenarios   
+**Gegeben**:   
+**Wenn**:   
+**Dann**:  
+**Und**:   
 
 ### Nicht-funktionale Anforderungen
-
-## DoD
+* [ ]  1. NFA
+* [ ]  2. NFA
