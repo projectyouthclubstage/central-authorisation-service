@@ -1,7 +1,10 @@
 package de.youthclubstage.backend.central.authorisation.endpoint;
 
 import de.youthclubstage.backend.central.authorisation.endpoint.model.ErrorDto;
+import de.youthclubstage.backend.central.authorisation.endpoint.model.ProviderUserDto;
+import de.youthclubstage.backend.central.authorisation.endpoint.model.TokenInformation;
 import de.youthclubstage.backend.central.authorisation.entity.ExternalUser;
+import de.youthclubstage.backend.central.authorisation.entity.Provider;
 import de.youthclubstage.backend.central.authorisation.service.ExternalUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
@@ -11,8 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/external-users")
@@ -36,9 +40,8 @@ public class ExternalUsersEndpoint {
                     responseContainer = "List"
             )
     })
-    @GetMapping(value = "getAll")
+    @GetMapping(value = "/allUsers")
     public ResponseEntity<Iterable<ExternalUser>> getAllExternalUsers() {
-        LOGGER.trace("getAllExternalUsers");
 
         return ResponseEntity.ok(externalUserService.getExternalUsers());
     }
@@ -48,23 +51,25 @@ public class ExternalUsersEndpoint {
     @ApiResponses({
             @ApiResponse(
                     code = 200,
-                    message = "A new user is created"
+                    message = "User is here"
             ),
             @ApiResponse(
-                    code = 400,
+                    code = 404,
                     message = "There was an error",
                     response = ErrorDto.class
             )
     })
-    @GetMapping(value = "createNew")
-    public ResponseEntity createExternalUser() {
-        LOGGER.trace("getAllExternalUsers");
+    @PostMapping(value = "/organisation/{organisation-id}")
+    public ResponseEntity createExternalUser(
+            @PathVariable(name = "organisation-id") Long organisationId,
+            @RequestBody ProviderUserDto providerUser) {
 
-        if (externalUserService.createUser()) {
-            LOGGER.debug("is created");
-            return ResponseEntity.ok().build();
+        Optional<TokenInformation> token = externalUserService.getTokenInformationForExternalUser(
+                providerUser.getProviderId(), providerUser.getProvider(), organisationId);
+
+        if (token.isPresent()) {
+            return ResponseEntity.ok(token.get());
         } else {
-            LOGGER.info("is not created");
             return ResponseEntity.badRequest().build();
         }
 

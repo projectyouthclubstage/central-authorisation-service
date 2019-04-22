@@ -5,20 +5,20 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-@RedisHash("ExternalUser")
+@RedisHash("UserGroupAssignment")
 @Data
-public class ExternalUser {
+public class UserGroupAssignment {
 
     @Id
+    private Long id;
+
+    @Indexed
     private Long userId;
 
     @Indexed
-    private String providerId;
+    private Long organisationId;
 
     @Indexed
-    private Provider providerType;
-
-    @Indexed
-    private Boolean systemAdmin;
+    private Long groupId;
 
 }
