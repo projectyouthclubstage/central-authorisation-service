@@ -12,3 +12,8 @@ logging:
     root: INFO
     redis.clients: TRACE
     org.springframework.data: TRACE
+
+jwt:
+  alias: jwtkey
+  pass: z7hF2erPZeGqI9bp
+  expirationMinutes: 2
