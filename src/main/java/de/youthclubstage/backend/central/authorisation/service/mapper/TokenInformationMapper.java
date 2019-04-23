@@ -1,6 +1,6 @@
 package de.youthclubstage.backend.central.authorisation.service.mapper;
 
-import de.youthclubstage.backend.central.authorisation.endpoint.model.TokenInformation;
+import de.youthclubstage.backend.central.authorisation.service.model.TokenInformation;
 import de.youthclubstage.backend.central.authorisation.entity.ExternalUser;
 import de.youthclubstage.backend.central.authorisation.entity.Member;
 import de.youthclubstage.backend.central.authorisation.entity.UserGroupAssignment;

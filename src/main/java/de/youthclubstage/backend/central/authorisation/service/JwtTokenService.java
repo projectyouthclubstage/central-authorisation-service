@@ -1,5 +1,6 @@
 package de.youthclubstage.backend.central.authorisation.service;
 
+import de.youthclubstage.backend.central.authorisation.service.model.TokenInformation;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,15 +9,12 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.security.KeyStore;
-import java.security.PublicKey;
-import java.security.cert.Certificate;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class JwtTokenService {
+class JwtTokenService {
 
     private final String password;
     private final String alias;
@@ -31,7 +29,7 @@ public class JwtTokenService {
         this.expirationMinutes = expiration;
     }
 
-    public String generateToken() throws Exception {
+    String generateToken(TokenInformation information) throws Exception {
 
 
         ClassPathResource resource = new ClassPathResource("keystore.jks");
@@ -39,30 +37,19 @@ public class JwtTokenService {
         keystore.load(resource.getInputStream(), password.toCharArray());
 
         Key key = keystore.getKey(alias, password.toCharArray());
-        Certificate cert = keystore.getCertificate(alias);
-        PublicKey publicKey = cert.getPublicKey();
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("user", "cope");
         Calendar expires = Calendar.getInstance();
         expires.roll(Calendar.MINUTE, expirationMinutes);
 
-        String retValue = Jwts.builder()
-                .setClaims(claims)
+        Map<String, Object> informationMap = information.toMap();
+
+        return Jwts.builder()
+                .setClaims(informationMap)
+                .setSubject("")
                 .setIssuedAt(new Date())
                 .setExpiration(expires.getTime())
                 .signWith(SignatureAlgorithm.RS256, key)
                 .compact();
 
-        retValue = Jwts.builder()
-                .setClaims(new HashMap<>())
-                .setSubject("a")
-                .setIssuedAt(new Date())
-                .setExpiration(expires.getTime())
-                .signWith(SignatureAlgorithm.RS256, key)
-                .setPayload("string")
-                .compact();
-
-        return retValue;
     }
 
 }

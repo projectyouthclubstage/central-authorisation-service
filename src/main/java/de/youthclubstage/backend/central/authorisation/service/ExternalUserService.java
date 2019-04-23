@@ -1,6 +1,8 @@
 package de.youthclubstage.backend.central.authorisation.service;
 
-import de.youthclubstage.backend.central.authorisation.endpoint.model.TokenInformation;
+import de.youthclubstage.backend.central.authorisation.endpoint.model.TokenDto;
+import de.youthclubstage.backend.central.authorisation.exception.TokenCreationException;
+import de.youthclubstage.backend.central.authorisation.service.model.TokenInformation;
 import de.youthclubstage.backend.central.authorisation.entity.ExternalUser;
 import de.youthclubstage.backend.central.authorisation.entity.Member;
 import de.youthclubstage.backend.central.authorisation.entity.Provider;
@@ -9,6 +11,8 @@ import de.youthclubstage.backend.central.authorisation.repository.ExternalUserRe
 import de.youthclubstage.backend.central.authorisation.repository.MemberRepository;
 import de.youthclubstage.backend.central.authorisation.repository.UserGroupAssignmentRepository;
 import de.youthclubstage.backend.central.authorisation.service.mapper.TokenInformationMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,23 +22,73 @@ import java.util.Optional;
 @Service
 public class ExternalUserService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExternalUserService.class);
+
+    private static final Long NON_EXISTING_ORGANISATION = -1L;
+
     private final ExternalUserRepository externalUserRepository;
     private final MemberRepository memberRepository;
     private final UserGroupAssignmentRepository userGroupAssignmentRepository;
+
+    private final JwtTokenService jwtTokenService;
 
     @Autowired
     public ExternalUserService(
             ExternalUserRepository externalUserRepository,
             MemberRepository memberRepository,
-            UserGroupAssignmentRepository userGroupAssignmentRepository) {
+            UserGroupAssignmentRepository userGroupAssignmentRepository,
+            JwtTokenService jwtTokenService) {
 
         this.externalUserRepository = externalUserRepository;
         this.memberRepository = memberRepository;
         this.userGroupAssignmentRepository = userGroupAssignmentRepository;
 
+        this.jwtTokenService = jwtTokenService;
+
         init();
     }
 
+
+    public Optional<TokenDto> getTokenForExternalUserWithContext(
+            String providerId, Provider provider, Long organisationId) {
+
+        Optional<TokenInformation> information =
+                this.getTokenInformationForExternalUser(providerId, provider, organisationId);
+
+        if (!information.isPresent()) {
+            return Optional.empty();
+        } else {
+            try {
+                return Optional.of(new TokenDto(jwtTokenService.generateToken(information.get())));
+            } catch (Exception e) {
+                String msg = String.format(
+                        "Exception while creating Token : %s",
+                        e);
+                LOGGER.error(msg);
+                throw new TokenCreationException("C-AS#0001-01", "Could not create JWT");
+            }
+        }
+    }
+
+    public Optional<TokenDto> getTokenForExternalUserWithoutContext(String providerId, Provider provider) {
+
+        Optional<TokenInformation> information =
+                this.getTokenInformationForExternalUser(providerId, provider, NON_EXISTING_ORGANISATION);
+
+        if (!information.isPresent()) {
+            return Optional.empty();
+        } else {
+            try {
+                return Optional.of(new TokenDto(jwtTokenService.generateToken(information.get())));
+            } catch (Exception e) {
+                String msg = String.format(
+                        "Exception while creating Token : %s",
+                        e);
+                LOGGER.error(msg);
+                throw new TokenCreationException("C-AS#0001-02", "Could not create JWT");
+            }
+        }
+    }
 
     public Optional<TokenInformation> getTokenInformationForExternalUser(
             String providerId, Provider provider, Long organisationId) {
@@ -57,7 +111,6 @@ public class ExternalUserService {
 
             return TokenInformationMapper.toTokenInformation(user.get(), member.get(), groups);
         }
-
     }
 
 
