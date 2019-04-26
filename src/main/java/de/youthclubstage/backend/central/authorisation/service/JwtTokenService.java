@@ -31,7 +31,6 @@ class JwtTokenService {
 
     String generateToken(TokenInformation information) throws Exception {
 
-
         ClassPathResource resource = new ClassPathResource("keystore.jks");
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
         keystore.load(resource.getInputStream(), password.toCharArray());
@@ -50,6 +49,11 @@ class JwtTokenService {
                 .signWith(SignatureAlgorithm.RS256, key)
                 .compact();
 
+    }
+
+    TokenInformation readToken(String token) {
+        // TODO
+        return new TokenInformation();
     }
 
 }

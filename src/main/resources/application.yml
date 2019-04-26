@@ -7,11 +7,12 @@ spring:
   redis:
     host: localhost
     port: 6379
+
 logging:
   level:
     root: INFO
-    redis.clients: TRACE
-    org.springframework.data: TRACE
+    redis.clients: ERROR
+    org.springframework.data: ERROR
 
 jwt:
   alias: jwtkey
