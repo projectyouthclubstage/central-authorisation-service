@@ -1,6 +1,5 @@
 package de.youthclubstage.backend.central.authorisation.endpoint;
 
-import de.youthclubstage.backend.central.authorisation.endpoint.model.ErrorDto;
 import de.youthclubstage.backend.central.authorisation.endpoint.model.TokenDto;
 import de.youthclubstage.backend.central.authorisation.service.ExternalAuthenticationService;
 import io.swagger.annotations.Api;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/token")
 @Api(tags = "Token")
 public class TokenWithoutContextEndpoint {
 
@@ -34,8 +33,7 @@ public class TokenWithoutContextEndpoint {
                 response = TokenDto.class),
         @ApiResponse(
                 code = 403,
-                message = "Access not allowed",
-                response = ErrorDto.class)})
+                message = "External or internal authentication failed")})
     @PostMapping(value = "/facebook")
     public ResponseEntity<TokenDto> getTokenByFacebookLogin(@RequestBody String idToken) {
 
@@ -54,9 +52,8 @@ public class TokenWithoutContextEndpoint {
                 message = "Authorisation successful",
                 response = TokenDto.class),
         @ApiResponse(
-                code = 400,
-                message = "There was an error",
-                response = ErrorDto.class)})
+                code = 403,
+                message = "External or internal authentication failed.")})
     @PostMapping(value = "/google")
     public ResponseEntity<TokenDto> getTokenByGoogleLogin(@RequestBody String idToken) {
 

@@ -40,7 +40,7 @@ public class ExternalUserService {
         user1.setUserId(1L);
         user1.setSystemAdmin(false);
         user1.setProviderType(Provider.FACEBOOK);
-        user1.setProviderId("facebook");
+        user1.setProviderId("2091312604321293");
         externalUserRepository.save(user1);
 
 
