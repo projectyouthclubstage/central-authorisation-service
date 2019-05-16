@@ -2,18 +2,19 @@ package de.youthclubstage.backend.central.authorisation.service.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 //TODO Delete whole class - just here while there is no token
 
 @ApiModel(value = "TokenInformation")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenInformation {
 
     @JsonProperty("user_id")

@@ -12,9 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Controller
 @RequestMapping("/token")
-@Api(tags = "Token")
+@Api(tags = "Token - with context")
 public class TokenWithContextEndpoint {
 
     private final ContextService contextService;

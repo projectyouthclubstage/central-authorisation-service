@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/token")
-@Api(tags = "Token")
+@Api(tags = "Token - without context")
 public class TokenWithoutContextEndpoint {
 
     private final ExternalAuthenticationService externalAuthenticationService;

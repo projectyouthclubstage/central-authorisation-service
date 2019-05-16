@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
+
 @RedisHash("ExternalUser")
 @Data
 public class ExternalUser {
@@ -18,7 +19,6 @@ public class ExternalUser {
     @Indexed
     private Provider providerType;
 
-    @Indexed
     private Boolean systemAdmin;
 
 }

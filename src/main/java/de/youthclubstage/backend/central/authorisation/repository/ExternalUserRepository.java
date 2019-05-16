@@ -12,6 +12,4 @@ public interface ExternalUserRepository extends CrudRepository<ExternalUser, Lon
 
     Optional<ExternalUser> findByProviderIdAndProviderType(String providerId, Provider provider);
 
-    Optional<ExternalUser> findById(Long id);
-
 }

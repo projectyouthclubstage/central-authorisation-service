@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 public class ExternalAuthenticationService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExternalAuthenticationService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExternalAuthenticationService.class);
 
     private final GoogleService googleService;
     private final FacebookService facebookService;
@@ -49,7 +49,7 @@ public class ExternalAuthenticationService {
         if (googleResponse.getId().isEmpty()) {
             throw new ExternalAuthenticationFailedException("CAS#001", "Google-id returned empty.");
         } else {
-            LOGGER.info("Successfully external login");
+            LOG.info("Successfully external login");
         }
 
         return this.getInternalAuthenticationForService(googleResponse.getId(), Provider.GOOGLE);
@@ -64,7 +64,7 @@ public class ExternalAuthenticationService {
         if (facebookResponse.getId().isEmpty()) {
             throw new ExternalAuthenticationFailedException("CAS#002", "Facebook-id returned empty.");
         } else {
-            LOGGER.info("Successfully external login");
+            LOG.info("Successfully external login");
         }
 
         return this.getInternalAuthenticationForService(facebookResponse.getId(), Provider.FACEBOOK);
@@ -90,7 +90,7 @@ public class ExternalAuthenticationService {
                 String msg = String.format(
                         "Exception while creating Token : %s",
                         e);
-                LOGGER.error(msg);
+                LOG.error(msg);
                 throw new TokenCreationException("CAS#003", "Could not create JWT");
             }
         }

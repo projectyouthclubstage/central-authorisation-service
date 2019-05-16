@@ -18,10 +18,8 @@ public class Member {
     @Indexed
     private Long organisationId;
 
-    @Indexed
     private Boolean administrator = false;
 
-    @Indexed
     private Boolean moderator = false;
 
 }
