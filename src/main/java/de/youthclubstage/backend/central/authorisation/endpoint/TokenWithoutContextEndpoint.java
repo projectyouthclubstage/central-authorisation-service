@@ -37,7 +37,7 @@ public class TokenWithoutContextEndpoint {
     @PostMapping(value = "/facebook")
     public ResponseEntity<TokenDto> getTokenByFacebookLogin(@RequestBody String idToken) {
 
-        Optional<TokenDto> token = externalAuthenticationService.getFacebookProfileInfo(idToken);
+        Optional<TokenDto> token = externalAuthenticationService.getTokenByFacebookLogin(idToken);
 
         if(token.isPresent()) {
             return ResponseEntity.ok(token.get());
@@ -53,7 +53,7 @@ public class TokenWithoutContextEndpoint {
                 response = TokenDto.class),
         @ApiResponse(
                 code = 403,
-                message = "External or internal authentication failed.")})
+                message = "External or internal authentication failed")})
     @PostMapping(value = "/google")
     public ResponseEntity<TokenDto> getTokenByGoogleLogin(@RequestBody String idToken) {
 

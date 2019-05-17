@@ -10,6 +10,7 @@ import de.youthclubstage.backend.central.authorisation.service.mapper.TokenInfor
 import de.youthclubstage.backend.central.authorisation.service.model.FacebookData;
 import de.youthclubstage.backend.central.authorisation.service.model.GoogleData;
 import de.youthclubstage.backend.central.authorisation.service.model.TokenInformation;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,31 +45,53 @@ public class ExternalAuthenticationService {
 
     public Optional<TokenDto> getTokenByGoogleLogin(String idToken) {
 
-        GoogleData googleResponse = googleService.getTokenInfoForToken(idToken);
+        GoogleData googleResponse;
 
-        if (googleResponse.getId().isEmpty()) {
-            throw new ExternalAuthenticationFailedException("CAS#001", "Google-id returned empty.");
+        try {
+            googleResponse = googleService.getTokenInfoForToken(idToken);
+        } catch (FeignException e) {
+            String msg = String.format(
+                    "Exception while calling Google-Service: %s",
+                    e);
+            LOG.info(msg);
+            throw new ExternalAuthenticationFailedException("CAS#0011", "Google-authentication failed.");
+        }
+
+
+        if (googleResponse.getId() == null || googleResponse.getId().isEmpty()) {
+            LOG.info("Google-Id returned empty.");
+            throw new ExternalAuthenticationFailedException("CAS#0012", "Google-authentication failed.");
         } else {
-            LOG.info("Successfully external login");
+            LOG.info("Successfully external login.");
         }
 
         return this.getInternalAuthenticationForService(googleResponse.getId(), Provider.GOOGLE);
-
     }
 
 
-    public Optional<TokenDto> getFacebookProfileInfo(final String accessToken) {
+    public Optional<TokenDto> getTokenByFacebookLogin(final String accessToken) {
 
-        FacebookData facebookResponse = facebookService.getTokenInfoForToken(accessToken, "id");
+        FacebookData facebookResponse;
 
-        if (facebookResponse.getId().isEmpty()) {
-            throw new ExternalAuthenticationFailedException("CAS#002", "Facebook-id returned empty.");
+        try {
+             facebookResponse = facebookService.getTokenInfoForToken(accessToken, "id");
+        } catch (FeignException e) {
+            String msg = String.format(
+                    "Exception while calling Facebook-Service: %s",
+                    e);
+            LOG.info(msg);
+            throw new ExternalAuthenticationFailedException("CAS#0021", "Facebook-authentication failed.");
+        }
+
+
+        if (facebookResponse.getId() == null || facebookResponse.getId().isEmpty()) {
+            LOG.info("Facebook-Id returned empty.");
+            throw new ExternalAuthenticationFailedException("CAS#0022", "Facebook-authentication failed.");
         } else {
-            LOG.info("Successfully external login");
+            LOG.info("Successfully external login.");
         }
 
         return this.getInternalAuthenticationForService(facebookResponse.getId(), Provider.FACEBOOK);
-
     }
 
     private Optional<TokenDto> getInternalAuthenticationForService(String providerId, Provider provider) {
