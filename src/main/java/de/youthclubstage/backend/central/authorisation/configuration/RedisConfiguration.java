@@ -10,8 +10,8 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
 @Configuration
-@ComponentScan("de.youth-club-stage.backend.central.authorisation")
-@EnableRedisRepositories(basePackages = "de.youth-club-stage.backend.central.authorisation")
+@ComponentScan("de.youthclubstage.backend.central.authorisation")
+@EnableRedisRepositories(basePackages = "de.youthclubstage.backend.central.authorisation")
 @PropertySource("classpath:application.yml")
 public class RedisConfiguration {
 

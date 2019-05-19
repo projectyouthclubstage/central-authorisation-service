@@ -33,7 +33,7 @@ public class SwaggerConfiguration {
                 "This is the API for the authorisation-service of the central division.",
                 "0.0.1",
                 "",
-                new Contact("Youth-Club-Stage", "www.youth-club-stage.de", "contact@youth-club-stage.de"),
+                new Contact("Youth-Club-Stage", "www.youthclubstage.de", "contact@youthclubstage.de"),
                 "", "", Collections.emptyList());
     }
 

@@ -1,28 +1,25 @@
 package de.youthclubstage.backend.central.authorisation.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
 
-@RedisHash("ExternalUser")
+@RedisHash("UserGroupAssignment")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ExternalUser {
+public class UserGroupAssignment {
 
     @Id
+    private Long id;
+
+    @Indexed
     private Long userId;
 
     @Indexed
-    private String providerId;
+    private Long organisationId;
 
     @Indexed
-    private Provider providerType;
-
-    private Boolean systemAdmin;
+    private Long groupId;
 
 }
