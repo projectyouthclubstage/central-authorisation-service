@@ -12,7 +12,7 @@ services:
     build:
       context: .
       dockerfile: ../Dockerfile
-    image: 192.168.233.1:5000/cas-{version}
+    image: 192.168.233.1:5000/cas:{version}
     networks:
       dev:
         aliases:
