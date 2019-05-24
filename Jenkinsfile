@@ -6,8 +6,8 @@ agent none
   environment {
 
     def mybuildverison = getBuildVersion(env.BUILD_NUMBER)
-    def projektname = "central-authorisation-service"
-    def registry = "192.168.233.1:5000/central-authorisation-service"
+    def projektname = "cas"
+    def registry = "192.168.233.1:5000/cas"
     def dns = "cas.youthclubstage.de"
     def dnsblue = "cas-blue.youthclubstage.de"
     def port = "8080"
