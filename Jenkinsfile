@@ -110,7 +110,7 @@ def dockerDeploy(String mybuildverison, String projektname, String dns, String d
 
                       retry (3) {
                           sleep 5
-                          httpRequest url:"https://$dnsblue/actuator/health", validResponseCodes: '200', validResponseContent: '"status":"UP"'
+                          httpRequest url:"https://$dnsblue/health", validResponseCodes: '200', validResponseContent: '"status":"UP"'
                       }
 
 
@@ -125,7 +125,7 @@ def dockerDeploy(String mybuildverison, String projektname, String dns, String d
 
                       retry (3) {
                           sleep 5
-                          httpRequest url:"https://$dns/actuator/health", validResponseCodes: '200', validResponseContent: '"status":"UP"'
+                          httpRequest url:"https://$dns/health", validResponseCodes: '200', validResponseContent: '"status":"UP"'
                       }
 
                       if(version != "")

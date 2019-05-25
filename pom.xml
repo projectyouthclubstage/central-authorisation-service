@@ -69,6 +69,8 @@
             <version>${embedded-redis.version}</version>
         </dependency>
 
+        
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>

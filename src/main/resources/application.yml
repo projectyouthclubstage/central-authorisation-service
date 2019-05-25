@@ -1,12 +1,34 @@
+spring:
+  profiles: default
+  application:
+    name: de.youth-club-stage.backend:central-authorisation-service
+redis:
+   host: localhost
+   port: 6379
+
 server:
   port: 8765
 
+logging:
+  level:
+    root: INFO
+    redis.clients: ERROR
+    org.springframework.data: ERROR
+
+jwt:
+  alias: jwtkey
+  pass: z7hF2erPZeGqI9bp
+  expirationMinutes: 2
+
+
+---
 spring:
+  profiles: docker
   application:
-    name: de.youth-club-stage.backend:central-authorisation-service
-  redis:
-    host: localhost
-    port: 6379
+     name: de.youth-club-stage.backend:central-authorisation-service
+redis:
+  host: ${REDISSERVER}
+  port: ${REDISPORT}
 
 logging:
   level:
