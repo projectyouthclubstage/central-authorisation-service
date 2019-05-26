@@ -3,7 +3,7 @@ spring:
   application:
     name: de.youth-club-stage.backend:central-authorisation-service
 redis:
-   host: localhost
+   server: localhost
    port: 6379
 
 server:
@@ -27,8 +27,10 @@ spring:
   application:
      name: de.youth-club-stage.backend:central-authorisation-service
 redis:
-  host: ${REDISSERVER}
+  server: ${REDISSERVER}
   port: ${REDISPORT}
+server:
+  port: 8080
 
 logging:
   level:
