@@ -3,11 +3,11 @@ spring:
   application:
     name: de.youth-club-stage.backend:central-authorisation-service
 redis:
-   server: localhost
+   server: 192.168.233.1
    port: 6379
 
 server:
-  port: 8765
+  port: 8080
 
 logging:
   level:
