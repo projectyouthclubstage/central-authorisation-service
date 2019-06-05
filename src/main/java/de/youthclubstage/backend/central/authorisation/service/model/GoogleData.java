@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GoogleData {
 
-    @JsonProperty("id")
+    @JsonProperty("sub")
     private String id;
 
 }

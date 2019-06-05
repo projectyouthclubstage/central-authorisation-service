@@ -11,11 +11,14 @@ import de.youthclubstage.backend.central.authorisation.service.model.FacebookDat
 import de.youthclubstage.backend.central.authorisation.service.model.GoogleData;
 import de.youthclubstage.backend.central.authorisation.service.model.TokenInformation;
 import feign.FeignException;
+import feign.HeaderMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,7 +51,11 @@ public class ExternalAuthenticationService {
         GoogleData googleResponse;
 
         try {
-            googleResponse = googleService.getTokenInfoForToken(idToken);
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Length", "0");
+
+            Object a = googleService.getTokenInfoForToken(idToken, headers);
+            googleResponse = (GoogleData) a;
         } catch (FeignException e) {
             String msg = String.format(
                     "Exception while calling Google-Service: %s",

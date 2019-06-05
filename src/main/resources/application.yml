@@ -11,9 +11,9 @@ server:
 
 logging:
   level:
-    root: INFO
-    redis.clients: ERROR
-    org.springframework.data: ERROR
+    root: DEBUG
+    redis.clients: DEBUG
+    org.springframework.data: DEBUG
 
 jwt:
   alias: jwtkey
