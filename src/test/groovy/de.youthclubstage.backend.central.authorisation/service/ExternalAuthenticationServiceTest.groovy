@@ -21,10 +21,13 @@ class ExternalAuthenticationServiceTest extends Specification {
     JwtTokenService jwtTokenService = Mock()
     ExternalUserRepository externalUserRepository = Mock()
 
+    def headers = new HashMap()
+
 
     def setup() {
         externalAuthenticationService = new ExternalAuthenticationService(
                 googleService, facebookService, jwtTokenService, externalUserRepository)
+        headers.put("Content-Length", "0")
     }
 
     @Unroll
@@ -78,8 +81,8 @@ class ExternalAuthenticationServiceTest extends Specification {
     def "Get token for #accessToken Google-Token (Response)"() {
         given:
 
-        googleService.getTokenInfoForToken("valid and existing") >> new GoogleData("id-1")
-        googleService.getTokenInfoForToken("valid but not existing") >> new GoogleData("id-2")
+        googleService.getTokenInfoForToken("valid and existing", headers) >> new GoogleData("id-1")
+        googleService.getTokenInfoForToken("valid but not existing", headers) >> new GoogleData("id-2")
 
         externalUserRepository.findByProviderIdAndProviderType("id-1", Provider.GOOGLE) >>
                 Optional.of(new ExternalUser())
@@ -103,9 +106,9 @@ class ExternalAuthenticationServiceTest extends Specification {
     def "Get token for #accessToken Google-Token (Exception)"() {
         given:
 
-        googleService.getTokenInfoForToken("invalid (id is null)") >> new GoogleData()
-        googleService.getTokenInfoForToken("invalid (id is empty)") >> new GoogleData("")
-        googleService.getTokenInfoForToken("invalid (Exception)") >> {throw new FeignException("")}
+        googleService.getTokenInfoForToken("invalid (id is null)", headers) >> new GoogleData()
+        googleService.getTokenInfoForToken("invalid (id is empty)", headers) >> new GoogleData("")
+        googleService.getTokenInfoForToken("invalid (Exception)", headers) >> {throw new FeignException("")}
 
         when:
         externalAuthenticationService.getTokenByGoogleLogin(accessToken)
@@ -129,7 +132,7 @@ class ExternalAuthenticationServiceTest extends Specification {
         def externalUser = new ExternalUser(userId, googleId, Provider.GOOGLE, true)
         def tokenInformation = new TokenInformation(userId, true, null, false, false, new ArrayList<Long>())
 
-        googleService.getTokenInfoForToken(idToken) >> new GoogleData(googleId)
+        googleService.getTokenInfoForToken(idToken, headers) >> new GoogleData(googleId)
         externalUserRepository.findByProviderIdAndProviderType(googleId, Provider.GOOGLE) >> Optional.of(externalUser)
         jwtTokenService.generateToken(tokenInformation) >> {throw new ClassCastException("Any exception possible")}
 
