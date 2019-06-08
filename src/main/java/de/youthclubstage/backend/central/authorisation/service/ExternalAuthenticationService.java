@@ -58,13 +58,13 @@ public class ExternalAuthenticationService {
                     "Exception while calling Google-Service: %s",
                     e);
             LOG.info(msg);
-            throw new ExternalAuthenticationFailedException("CAS#0011", "Google-authentication failed.");
+            throw new ExternalAuthenticationFailedException(2000);
         }
 
 
         if (googleResponse.getId() == null || googleResponse.getId().isEmpty()) {
             LOG.info("Google-Id returned empty.");
-            throw new ExternalAuthenticationFailedException("CAS#0012", "Google-authentication failed.");
+            throw new ExternalAuthenticationFailedException(2000);
         } else {
             LOG.info("Successfully external login.");
         }
@@ -84,13 +84,13 @@ public class ExternalAuthenticationService {
                     "Exception while calling Facebook-Service: %s",
                     e);
             LOG.info(msg);
-            throw new ExternalAuthenticationFailedException("CAS#0021", "Facebook-authentication failed.");
+            throw new ExternalAuthenticationFailedException(2001);
         }
 
 
         if (facebookResponse.getId() == null || facebookResponse.getId().isEmpty()) {
             LOG.info("Facebook-Id returned empty.");
-            throw new ExternalAuthenticationFailedException("CAS#0022", "Facebook-authentication failed.");
+            throw new ExternalAuthenticationFailedException(2001);
         } else {
             LOG.info("Successfully external login.");
         }
@@ -114,7 +114,7 @@ public class ExternalAuthenticationService {
                     "Exception while creating Token : %s",
                     e);
             LOG.error(msg);
-            throw new TokenCreationException("CAS#003", "Could not create JWT");
+            throw new TokenCreationException(3000);
         }
 
     }

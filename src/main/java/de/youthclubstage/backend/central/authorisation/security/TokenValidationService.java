@@ -57,11 +57,11 @@ public class TokenValidationService {
             if (claims.getBody().getExpiration().before((new Date()))) {
                 return claims.getBody();
             } else {
-                throw new TokenValidationException("", "");
+                throw new TokenValidationException(2011);
             }
 
         } catch(Exception e) {
-            throw new TokenValidationException("", "");
+            throw new TokenValidationException(2010);
         }
     }
 

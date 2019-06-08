@@ -72,7 +72,7 @@ public class ContextService {
                     "Exception while creating Token : %s",
                     e);
             LOG.error(msg);
-            throw new TokenCreationException("CAS#003", "Could not create JWT");
+            throw new TokenCreationException(3000);
         }
 
     }
