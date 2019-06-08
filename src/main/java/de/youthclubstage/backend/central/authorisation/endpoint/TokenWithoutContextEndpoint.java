@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/token")
+@RequestMapping("/public")
 @Api(tags = "Token - without context")
 public class TokenWithoutContextEndpoint {
 
@@ -34,7 +34,7 @@ public class TokenWithoutContextEndpoint {
         @ApiResponse(
                 code = 403,
                 message = "External or internal authentication failed")})
-    @PostMapping(value = "/facebook")
+    @PostMapping(value = "/token/facebook")
     public ResponseEntity<TokenDto> getTokenByFacebookLogin(@RequestBody String idToken) {
 
         Optional<TokenDto> token = externalAuthenticationService.getTokenByFacebookLogin(idToken);
@@ -54,7 +54,7 @@ public class TokenWithoutContextEndpoint {
         @ApiResponse(
                 code = 403,
                 message = "External or internal authentication failed")})
-    @PostMapping(value = "/google")
+    @PostMapping(value = "/token/google")
     public ResponseEntity<TokenDto> getTokenByGoogleLogin(@RequestBody String idToken) {
 
         Optional<TokenDto> token = externalAuthenticationService.getTokenByGoogleLogin(idToken);

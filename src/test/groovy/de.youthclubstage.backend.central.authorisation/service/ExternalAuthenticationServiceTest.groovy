@@ -7,7 +7,7 @@ import de.youthclubstage.backend.central.authorisation.exception.TokenCreationEx
 import de.youthclubstage.backend.central.authorisation.repository.ExternalUserRepository
 import de.youthclubstage.backend.central.authorisation.service.model.FacebookData
 import de.youthclubstage.backend.central.authorisation.service.model.GoogleData
-import de.youthclubstage.backend.central.authorisation.service.model.TokenInformation
+
 import feign.FeignException
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -18,7 +18,7 @@ class ExternalAuthenticationServiceTest extends Specification {
 
     GoogleService googleService = Mock()
     FacebookService facebookService = Mock()
-    JwtTokenService jwtTokenService = Mock()
+    TokenCreationService jwtTokenService = Mock()
     ExternalUserRepository externalUserRepository = Mock()
 
     def headers = new HashMap()
@@ -130,11 +130,10 @@ class ExternalAuthenticationServiceTest extends Specification {
         def googleId = "externalId"
         def userId = 4711L
         def externalUser = new ExternalUser(userId, googleId, Provider.GOOGLE, true)
-        def tokenInformation = new TokenInformation(userId, true, null, false, false, new ArrayList<Long>())
 
         googleService.getTokenInfoForToken(idToken, headers) >> new GoogleData(googleId)
         externalUserRepository.findByProviderIdAndProviderType(googleId, Provider.GOOGLE) >> Optional.of(externalUser)
-        jwtTokenService.generateToken(tokenInformation) >> {throw new ClassCastException("Any exception possible")}
+        jwtTokenService.generateToken(externalUser) >> {throw new ClassCastException("Any exception possible")}
 
         when:
         externalAuthenticationService.getTokenByGoogleLogin(idToken)

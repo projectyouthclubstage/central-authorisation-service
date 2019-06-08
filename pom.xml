@@ -20,10 +20,16 @@
         <java.version>1.8</java.version>
         <embedded-redis.version>0.6</embedded-redis.version>
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
+        <spring-security.version>5.1.5.RELEASE</spring-security.version>
     </properties>
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

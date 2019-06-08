@@ -6,12 +6,9 @@ import de.youthclubstage.backend.central.authorisation.entity.Provider;
 import de.youthclubstage.backend.central.authorisation.exception.ExternalAuthenticationFailedException;
 import de.youthclubstage.backend.central.authorisation.exception.TokenCreationException;
 import de.youthclubstage.backend.central.authorisation.repository.ExternalUserRepository;
-import de.youthclubstage.backend.central.authorisation.service.mapper.TokenInformationMapper;
 import de.youthclubstage.backend.central.authorisation.service.model.FacebookData;
 import de.youthclubstage.backend.central.authorisation.service.model.GoogleData;
-import de.youthclubstage.backend.central.authorisation.service.model.TokenInformation;
 import feign.FeignException;
-import feign.HeaderMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +25,19 @@ public class ExternalAuthenticationService {
 
     private final GoogleService googleService;
     private final FacebookService facebookService;
-    private final JwtTokenService jwtTokenService;
+    private final TokenCreationService tokenCreationService;
 
     private final ExternalUserRepository externalUserRepository;
 
     @Autowired
     public ExternalAuthenticationService(GoogleService googleService,
                                          FacebookService facebookService,
-                                         JwtTokenService jwtTokenService,
+                                         TokenCreationService tokenCreationService,
                                          ExternalUserRepository externalUserRepository) {
 
         this.googleService = googleService;
         this.facebookService = facebookService;
-        this.jwtTokenService = jwtTokenService;
+        this.tokenCreationService = tokenCreationService;
 
         this.externalUserRepository = externalUserRepository;
     }
@@ -109,20 +106,15 @@ public class ExternalAuthenticationService {
             return Optional.empty();
         }
 
-        Optional<TokenInformation> information =  TokenInformationMapper.toTokenInformation(user.get());
 
-        if (!information.isPresent()) {
-            return Optional.empty();
-        } else {
-            try {
-                return Optional.of(new TokenDto(jwtTokenService.generateToken(information.get())));
-            } catch (Exception e) {
-                String msg = String.format(
-                        "Exception while creating Token : %s",
-                        e);
-                LOG.error(msg);
-                throw new TokenCreationException("CAS#003", "Could not create JWT");
-            }
+        try {
+            return Optional.of(new TokenDto(tokenCreationService.generateToken(user.get())));
+        } catch (Exception e) {
+            String msg = String.format(
+                    "Exception while creating Token : %s",
+                    e);
+            LOG.error(msg);
+            throw new TokenCreationException("CAS#003", "Could not create JWT");
         }
 
     }
