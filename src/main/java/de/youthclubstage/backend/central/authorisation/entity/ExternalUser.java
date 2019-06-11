@@ -23,6 +23,6 @@ public class ExternalUser {
     @Indexed
     private Provider providerType;
 
-    private Boolean systemAdmin;
+    private Boolean systemAdmin = false;
 
 }

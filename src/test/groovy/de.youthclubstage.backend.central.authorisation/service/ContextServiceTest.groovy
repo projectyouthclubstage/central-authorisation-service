@@ -4,16 +4,12 @@ import de.youthclubstage.backend.central.authorisation.entity.ExternalUser
 import de.youthclubstage.backend.central.authorisation.entity.Member
 import de.youthclubstage.backend.central.authorisation.entity.Provider
 import de.youthclubstage.backend.central.authorisation.entity.UserGroupAssignment
-import de.youthclubstage.backend.central.authorisation.exception.ExternalAuthenticationFailedException
 import de.youthclubstage.backend.central.authorisation.exception.TokenCreationException
 import de.youthclubstage.backend.central.authorisation.exception.TokenValidationException
-import de.youthclubstage.backend.central.authorisation.repository.ExternalUserRepository
 import de.youthclubstage.backend.central.authorisation.repository.MemberRepository
 import de.youthclubstage.backend.central.authorisation.repository.UserGroupAssignmentRepository
 import de.youthclubstage.backend.central.authorisation.security.TokenValidationService
-import de.youthclubstage.backend.central.authorisation.service.model.FacebookData
 import de.youthclubstage.backend.central.authorisation.service.model.GoogleData
-import feign.FeignException
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -45,27 +41,43 @@ class ContextServiceTest extends Specification {
         groups.add(new UserGroupAssignment(11L, 1L, 4711L, 11L))
         groups.add(new UserGroupAssignment(12L, 1L, 4711L, 12L))
         userGroupAssignmentRepository.findAllByUserIdAndOrganisationId(1L, 4711L) >> groups
-        userGroupAssignmentRepository.findAllByUserIdAndOrganisationId(1L, 4712L) >>
-                new ArrayList<UserGroupAssignment>()
+        def emptyGroups = new ArrayList<UserGroupAssignment>()
+        userGroupAssignmentRepository.findAllByUserIdAndOrganisationId(1L, 4712L) >> emptyGroups
 
         tokenValidationService.getUserId() >> userId
 
         tokenCreationService.generateToken(member42, groups) >> expectedResponse
-        tokenCreationService.generateToken(member43, new ArrayList<UserGroupAssignment>()) >> expectedResponse
+        tokenCreationService.generateToken(member43, emptyGroups) >> expectedResponse
 
 
         when:
         def actual = contextService.getTokenForOrganisationId(organisationId)
 
         then:
-        actual.isPresent()
-        actual.get().getToken() == expectedResponse
+        if(expectResult) {
+            actual.isPresent()
+            actual.get().getToken() == expectedResponse
+        } else {
+            !actual.isPresent()
+        }
 
         where:
-        name                                        | userId    | organisationId    | expectedResponse
-        "an existing organisation with groups"      | 1L        | 4711L             | "success with"
-        "an existing organisation without groups"   | 1L        | 4712L             | "success without"
-        "a non-existing organisation"               | 1L        | 42L               | null
+        name                                        | userId    | organisationId    | expectedResponse  | expectResult
+        "an existing organisation with groups"      | 1L        | 4711L             | "success with"    | true
+        "an existing organisation without groups"   | 1L        | 4712L             | "success without" | true
+        "a non-existing organisation"               | 1L        | 4713L             | null              | false
+    }
+
+    @Unroll
+    def "Get token for an organisation with an invalid token"() {
+        given:
+        tokenValidationService.getUserId() >> {throw new TokenValidationException(-1)}
+
+        when:
+        contextService.getTokenForOrganisationId(1L)
+
+        then:
+        thrown(TokenValidationException.class)
     }
 
     @Unroll
@@ -94,7 +106,6 @@ class ContextServiceTest extends Specification {
         "a filled list of organisations"    | 2L        | 4
     }
 
-
     @Unroll
     def "Get organisations with an invalid token"() {
         given:
@@ -107,6 +118,25 @@ class ContextServiceTest extends Specification {
         thrown(TokenValidationException.class)
     }
 
+    def "Token-generation throws an exception"() {
+        given:
+        def member = new Member(42L, 1L, 4711L, false, false)
+        memberRepository.findByUserIdAndOrganisationId(1L, 4711L) >> Optional.of(member)
 
+        def groups = new ArrayList<UserGroupAssignment>()
+        groups.add(new UserGroupAssignment(11L, 1L, 4711L, 11L))
+        groups.add(new UserGroupAssignment(12L, 1L, 4711L, 12L))
+        userGroupAssignmentRepository.findAllByUserIdAndOrganisationId(1L, 4711L) >> groups
+
+        tokenValidationService.getUserId() >> 1L
+
+        tokenCreationService.generateToken(member, groups) >> {throw new ClassCastException("Any exception possible")}
+
+        when:
+        contextService.getTokenForOrganisationId(4711L)
+
+        then:
+        thrown(TokenCreationException.class)
+    }
 
 }
