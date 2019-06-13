@@ -101,7 +101,6 @@ def dockerDeploy(String mybuildverison, String projektname, String dns, String d
                       sleep 240 // second
 
                       sh "curl -d \'{\"source\": \""+dnsblue+"\",\"target\": \""+projektname+"-$mybuildverison"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
-                      sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
 
                       sleep 10 // second
@@ -116,7 +115,6 @@ def dockerDeploy(String mybuildverison, String projektname, String dns, String d
 
                       //Green
                       sh "curl -d \'{\"source\": \""+dns+"\",\"target\": \""+projektname+"-$mybuildverison"+":8080\"}\' -H \"Content-Type: application/json\" -X POST http://192.168.233.1:9099/v1/dns"
-                      sh 'docker kill --signal=HUP "$(docker ps |grep nginx |cut -d " " -f1)"'
 
 
                       sleep 10 // second
