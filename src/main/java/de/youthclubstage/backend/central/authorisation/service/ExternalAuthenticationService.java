@@ -54,8 +54,8 @@ public class ExternalAuthenticationService {
             Map<String, String> headers = new HashMap<>();
             headers.put("Content-Length", "0");
 
-            Object a = googleService.getTokenInfoForToken(idToken, headers);
-            googleResponse = (GoogleData) a;
+            googleResponse = googleService.getTokenInfoForToken(idToken, headers);
+
         } catch (FeignException e) {
             String msg = String.format(
                     "Exception while calling Google-Service: %s",

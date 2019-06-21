@@ -14,7 +14,14 @@ logging:
     root: DEBUG
     redis.clients: DEBUG
     org.springframework.data: DEBUG
-
+cors:
+  allowedOrigins: '*'
+  allowedHeaders:
+    - Authorization
+    - Content-Type
+  exposedHeaders:
+    - Authorization
+    - Content-Type
 jwt:
   alias: jwtkey
   pass: z7hF2erPZeGqI9bp
@@ -31,7 +38,14 @@ redis:
   port: ${REDISPORT}
 server:
   port: 8080
-
+cors:
+  allowedOrigins: '*'
+  allowedHeaders:
+    - Authorization
+    - Content-Type
+  exposedHeaders:
+    - Authorization
+    - Content-Type
 logging:
   level:
     root: INFO
