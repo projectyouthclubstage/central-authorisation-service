@@ -1,5 +1,6 @@
 package de.youthclubstage.backend.central.authorisation.service;
 
+import de.youthclubstage.backend.central.authorisation.service.model.GoogleData;
 import feign.HeaderMap;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,6 @@ import java.util.Map;
 public interface GoogleService {
 
     @PostMapping(value = "/tokeninfo")
-    Object getTokenInfoForToken(@RequestParam("idToken") String idToken, @HeaderMap Map header);
+    GoogleData getTokenInfoForToken(@RequestParam("idToken") String idToken, @HeaderMap Map header);
 
 }
